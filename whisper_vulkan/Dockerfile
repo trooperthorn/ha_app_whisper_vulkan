@@ -1,5 +1,5 @@
 FROM debian:trixie-slim AS build
-RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates cmake ninja-build g++ libvulkan-dev glslc && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates cmake ninja-build g++ libvulkan-dev glslc spirv-headers && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 RUN git init && git remote add origin https://github.com/ggml-org/whisper.cpp.git && git fetch --depth 1 origin 927cfce34f31707e17f2bff35c349632fb9e2c3a && git checkout FETCH_HEAD
 RUN cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DGGML_VULKAN=ON -DGGML_NATIVE=OFF -DBUILD_SHARED_LIBS=OFF -DWHISPER_BUILD_TESTS=OFF && cmake --build build --target whisper-server -j 2
