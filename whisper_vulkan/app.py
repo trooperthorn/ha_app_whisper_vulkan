@@ -52,7 +52,7 @@ def model_path(config):
 
 def command(config, model):
     args = ['/usr/local/bin/whisper-server', '--model', str(model), '--host', '127.0.0.1', '--port', '8080',
-            '--language', 'en', '--threads', str(config['threads']), '--beam-size', str(config['beam_size']), '--no-context']
+            '--language', 'en', '--threads', str(config['threads']), '--beam-size', str(config['beam_size'])]
     if config['backend'] == 'cpu':
         args.append('--no-gpu')
     return args
