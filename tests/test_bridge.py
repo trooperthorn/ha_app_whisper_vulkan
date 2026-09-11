@@ -10,7 +10,7 @@ from wyoming.audio import AudioStart, AudioChunk, AudioStop
 from wyoming.info import Info
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'whisper_vulkan'))
-from bridge import Handler, MAX_BYTES, wav_bytes
+from bridge import Handler, MAX_BYTES, wav_bytes, make_info
 from app import options, command
 
 
@@ -29,6 +29,12 @@ def test_invalid_options(raw):
 def test_cpu_is_explicit():
     assert '--no-gpu' in command(options({'backend': 'cpu'}), '/model.bin')
     assert '--no-gpu' not in command(options({}), '/model.bin')
+
+
+def test_model_discovery_serializes():
+    info = Info.from_event(make_info('small.en').event())
+    assert info.asr[0].models[0].languages == ['en']
+    assert info.asr[0].models[0].name == 'small.en'
 
 
 def run_case(mode):

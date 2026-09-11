@@ -87,10 +87,14 @@ class Handler(AsyncEventHandler):
         return True
 
 
-async def serve(model):
+def make_info(model):
     attribution = Attribution(name='whisper.cpp', url='https://github.com/ggml-org/whisper.cpp')
-    info = Info(asr=[AsrProgram(name='whisper-vulkan', description='Local Whisper Vulkan', attribution=attribution,
+    return Info(asr=[AsrProgram(name='whisper-vulkan', description='Local Whisper Vulkan', attribution=attribution,
         installed=True, version='0.1.0', models=[AsrModel(name=model, description=model,
-        attribution=attribution, installed=True, languages=['en'])])])
+        attribution=attribution, installed=True, languages=['en'], version='1.0')])])
+
+
+async def serve(model):
+    info = make_info(model)
     async with httpx.AsyncClient(timeout=110, trust_env=False) as client:
         await AsyncServer.from_uri('tcp://0.0.0.0:10300').run(partial(Handler, info, asyncio.Lock(), client))
