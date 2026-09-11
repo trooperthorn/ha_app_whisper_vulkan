@@ -20,3 +20,4 @@ jobs:
       - run: docker build -t whisper-vulkan:test whisper_vulkan
       - run: docker run --rm whisper-vulkan:test /usr/local/bin/whisper-server --help
       - run: docker run --rm whisper-vulkan:test /opt/venv/bin/python -c 'import app, bridge'
+      - run: docker run --rm -v "$PWD/tests/smoke.py:/smoke.py:ro" whisper-vulkan:test /opt/venv/bin/python /smoke.py
