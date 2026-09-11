@@ -45,7 +45,7 @@ GPU access uses Home Assistant's `video: true`; no host network, Docker socket, 
 
 ## Upstream
 
-- whisper.cpp v1.9.4, pinned commit `7d75b14994ae7f59623e2471445e2355fe506ed2`: https://github.com/ggml-org/whisper.cpp
+- whisper.cpp v1.9.4, pinned commit `927cfce34f31707e17f2bff35c349632fb9e2c3a`: https://github.com/ggml-org/whisper.cpp
 - Wyoming protocol library 1.10.2: https://github.com/OHF-Voice/wyoming
 - Home Assistant App configuration: https://developers.home-assistant.io/docs/apps/configuration/
 

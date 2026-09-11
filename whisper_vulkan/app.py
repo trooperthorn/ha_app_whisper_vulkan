@@ -70,7 +70,13 @@ async def main():
             raise RuntimeError('AMD Vulkan device not detected; refusing silent CPU fallback')
     model = model_path(config)
     LOG.info('Requested backend=%s model=%s; engine logs below establish actual backend use', config['backend'], config['model'])
-    child = await asyncio.create_subprocess_exec(*command(config, model))
+    # The upstream HTTP server runs unprivileged, with only render-device groups.
+    model.chmod(0o644)
+    cache = Path('/data/cache')
+    cache.mkdir(exist_ok=True)
+    os.chown(cache, 65534, 65534)
+    groups = sorted({node.stat().st_gid for node in Path('/dev/dri').glob('renderD*')})
+    child = await asyncio.create_subprocess_exec(*command(config, model), user=65534, group=65534, extra_groups=groups)
     stop = asyncio.Event()
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGTERM, signal.SIGINT):
