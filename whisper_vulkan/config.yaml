@@ -1,0 +1,30 @@
+name: Whisper Vulkan
+version: 0.1.0
+slug: whisper_vulkan
+description: Local speech recognition with whisper.cpp and AMD Vulkan
+url: https://github.com/trooperthorn/ha_app_whisper_vulkan
+arch: [amd64]
+stage: experimental
+startup: services
+boot: manual
+init: true
+video: true
+ports:
+  10300/tcp: null
+ports_description:
+  10300/tcp: Wyoming speech recognition (optional LAN exposure)
+watchdog: tcp://[HOST]:10300
+options:
+  model: small.en
+  language: en
+  backend: vulkan
+  threads: 4
+  beam_size: 5
+  download_model: true
+schema:
+  model: list(tiny.en|base.en|small.en)
+  language: list(en)
+  backend: list(vulkan|cpu)
+  threads: int(1,16)
+  beam_size: int(1,10)
+  download_model: bool

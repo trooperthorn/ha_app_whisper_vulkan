@@ -1,0 +1,22 @@
+name: Validate and build
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install -r whisper_vulkan/requirements.txt pytest==8.4.2 pyyaml==6.0.3
+      - run: python -m pytest -q
+      - run: python -c "import yaml; c=yaml.safe_load(open('whisper_vulkan/config.yaml')); assert set(c['options']) == set(c['schema']); assert c['video'] and c['arch'] == ['amd64']"
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t whisper-vulkan:test whisper_vulkan
+      - run: docker run --rm whisper-vulkan:test /usr/local/bin/whisper-server --help
+      - run: docker run --rm whisper-vulkan:test /opt/venv/bin/python -c 'import app, bridge'
